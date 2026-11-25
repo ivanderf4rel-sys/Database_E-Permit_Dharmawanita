@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-Permit Asrama | SMA Dharmawanita 1 Pare</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Header Sekolah -->
+  <header class="bg-blue-950 text-white shadow-lg border-b-4 border-amber-400">
+    <div class="max-w-5xl mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div>
+        <span class="text-xs font-semibold uppercase tracking-wider bg-amber-400 text-blue-950 px-2.5 py-0.5 rounded-full">
+          Sistem Informasi Boarding School
+        </span>
+        <h1 class="text-2xl font-bold mt-1">E-Permit Asrama</h1>
+        <p class="text-blue-200 text-sm">SMA Dharmawanita 1 Pare</p>
+      </div>
+      <!-- Navigasi Tab -->
+      <div class="flex bg-blue-900 p-1 rounded-lg">
+        <button onclick="switchTab('siswa')" id="btn-siswa" class="px-4 py-2 rounded-md text-sm font-semibold bg-amber-400 text-blue-950 transition">
+          Form Siswa
+        </button>
+        <button onclick="switchTab('pembina')" id="btn-pembina" class="px-4 py-2 rounded-md text-sm font-semibold text-white hover:bg-blue-800 transition">
+          Panel Pembina & Satpam
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Konten Utama -->
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-grow w-full">
+
+    <!-- TAB 1: HALAMAN SISWA -->
+    <section id="tab-siswa" class="space-y-8">
+      <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+        <h2 class="text-lg font-bold text-blue-950 border-b pb-3 mb-5">Formulir Pengajuan Izin Keluar Asrama</h2>
+        
+        <form id="formIzin" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nama Lengkap Siswa</label>
+            <input type="text" id="nama" required placeholder="Contoh: Ahmad Fauzan" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium mb-1">Kelas</label>
+              <input type="text" id="kelas" required placeholder="XI IPA 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Kamar / Gedung</label>
+              <input type="text" id="kamar" required placeholder="Asrama Putra 04" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Jenis Izin</label>
+            <select id="jenisIzin" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900">
+              <option value="Pesiar (Keluar Lingkungan Sekolah)">Pesiar (Keluar Sebentar)</option>
+              <option value="Pulang ke Rumah">Pulang ke Rumah (Bermalam)</option>
+              <option value="Keperluan Mendesak / Berobat">Keperluan Mendesak / Berobat</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium mb-1">Jam Keluar</label>
+              <input type="time" id="jamKeluar" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Estimasi Kembali</label>
+              <input type="time" id="estimasiKembali" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900" />
+            </div>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-1">Alasan Lengkap & Tujuan</label>
+            <textarea id="alasan" rows="2" required placeholder="Tuliskan tujuan dan keperluan keluar asrama secara jelas..." class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-900"></textarea>
+          </div>
+
+          <div class="md:col-span-2 pt-2">
+            <button type="submit" id="btnSubmit" class="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+              <span>Ajukan Izin & Simpan ke Spreadsheet</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Kartu Izin Digital Terbaru -->
+      <div id="kartuIzinContainer" class="hidden bg-white p-6 rounded-xl shadow-md border-l-8 border-amber-400">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-bold uppercase text-slate-400">Kartu Pass Digital Siswa</p>
+            <h3 id="cardNama" class="text-xl font-bold text-blue-950 mt-0.5">-</h3>
+            <p id="cardDetail" class="text-sm text-slate-600">-</p>
+          </div>
+          <span id="cardKode" class="bg-slate-100 border border-slate-300 font-mono font-bold text-sm px-3 py-1 rounded">
+            DW1-000
+          </span>
+        </div>
+        <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-2">
+          <p class="text-sm"><strong>Tujuan:</strong> <span id="cardAlasan">-</span></p>
+          <span id="cardStatus" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+            Menunggu Persetujuan
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PANEL PEMBINA & SATPAM -->
+    <section id="tab-pembina" class="hidden space-y-6">
+      <!-- Ringkasan Statistik -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+          <p class="text-sm text-slate-500">Total Pengajuan Hari Ini</p>
+          <p id="statTotal" class="text-2xl font-bold text-blue-950 mt-1">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+          <p class="text-sm text-slate-500">Menunggu Persetujuan</p>
+          <p id="statMenunggu" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+          <p class="text-sm text-slate-500">Sedang di Luar Asrama</p>
+          <p id="statKeluar" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- Tabel Daftar Perizinan -->
+      <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+        <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
+          <h2 class="font-bold text-blue-950">Daftar Kontrol Perizinan Asrama</h2>
+          <span class="text-xs text-slate-500">*Data otomatis tersinkron ke Google Sheets</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 border-b">
+                <th class="p-3">Kode</th>
+                <th class="p-3">Siswa & Kamar</th>
+                <th class="p-3">Jenis & Waktu</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-center">Aksi Pembina / Satpam</th>
+              </tr>
+            </thead>
+            <tbody id="tabelDaftarIzin" class="divide-y divide-slate-200">
+              <!-- Diisi via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-slate-200 text-center py-4 text-xs text-slate-600 mt-10">
+    &copy; 2026 Sistem Perizinan Digital Asrama — SMA Dharmawanita 1 Pare
+  </footer>
+
+  <script>
+    // =========================================================================
+    // TEMPEL URL GOOGLE APPS SCRIPT WEB APP KAMU DI BARIS BAWAH INI:
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxttAVSLQxi63FBxVcmgqXTRoFcoK8VNzB_46Yawc5U0TyebxF0nV-QeSTyk-_mCl2PNQ/exec";
+    // =========================================================================
+
+    // Data awal simulasi untuk demo presentasi
+    const defaultData = [
+      {
+        kodeIzin: "DW1-2026-101",
+        nama: "Nabila Putri Rahmawati",
+        kelas: "XI IPA 2",
+        kamar: "Asrama Putri Melati 02",
+        jenisIzin: "Pesiar",
+        jamKeluar: "15:30",
+        estimasiKembali: "17:00",
+        alasan: "Membeli perlengkapan alat tulis dan buku LKS di Pare",
+        status: "Disetujui"
+      },
+      {
+        kodeIzin: "DW1-2026-102",
+        nama: "Rizky Pratama",
+        kelas: "XII IPS 1",
+        kamar: "Asrama Putra Bima 05",
+        jenisIzin: "Keperluan Mendesak",
+        jamKeluar: "16:00",
+        estimasiKembali: "17:30",
+        alasan: "Periksa gigi ke klinik terdekat bersama pembina",
+        status: "Menunggu"
+      }
+    ];
+
+    let dataIzin = JSON.parse(localStorage.getItem("epermit_dw1")) || defaultData;
+
+    function simpanLocal() {
+      localStorage.setItem("epermit_dw1", JSON.stringify(dataIzin));
+      renderTabel();
+    }
+
+    function switchTab(tab) {
+      document.getElementById("tab-siswa").classList.toggle("hidden", tab !== "siswa");
+      document.getElementById("tab-pembina").classList.toggle("hidden", tab !== "pembina");
+      
+      document.getElementById("btn-siswa").className = tab === "siswa" 
+        ? "px-4 py-2 rounded-md text-sm font-semibold bg-amber-400 text-blue-950 transition"
+        : "px-4 py-2 rounded-md text-sm font-semibold text-white hover:bg-blue-800 transition";
+        
+      document.getElementById("btn-pembina").className = tab === "pembina"
+        ? "px-4 py-2 rounded-md text-sm font-semibold bg-amber-400 text-blue-950 transition"
+        : "px-4 py-2 rounded-md text-sm font-semibold text-white hover:bg-blue-800 transition";
+
+      if (tab === "pembina") renderTabel();
+    }
+
+    // Proses Kirim Form ke Spreadsheet & LocalStorage
+    document.getElementById("formIzin").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true;
+      btn.innerHTML = "<span>Mengirim data ke Spreadsheet...</span>";
+
+      const randomNum = Math.floor(100 + Math.random() * 900);
+      const izinBaru = {
+        kodeIzin: `DW1-2026-${randomNum}`,
+        nama: document.getElementById("nama").value,
+        kelas: document.getElementById("kelas").value,
+        kamar: document.getElementById("kamar").value,
+        jenisIzin: document.getElementById("jenisIzin").value,
+        jamKeluar: document.getElementById("jamKeluar").value,
+        estimasiKembali: document.getElementById("estimasiKembali").value,
+        alasan: document.getElementById("alasan").value,
+        status: "Menunggu"
+      };
+
+      // Kirim ke Google Spreadsheet jika URL sudah diisi
+      if (SCRIPT_URL !== "TEMPEL_URL_APPS_SCRIPT_KAMU_DISINI" && SCRIPT_URL.startsWith("http")) {
+        try {
+          await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors", // Menghindari blokir CORS dari browser saat kirim ke Apps Script
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(izinBaru)
+          });
+        } catch (err) {
+          console.error("Gagal kirim ke sheet:", err);
+        }
+      }
+
+      // Simpan ke tampilan lokal & tampilkan kartu pass
+      dataIzin.unshift(izinBaru);
+      simpanLocal();
+      tampilkanKartuSiswa(izinBaru);
+
+      this.reset();
+      btn.disabled = false;
+      btn.innerHTML = "<span>Ajukan Izin & Simpan ke Spreadsheet</span>";
+      alert("Pengajuan izin berhasil dikirim dan tercatat di Spreadsheet!");
+    });
+
+    function tampilkanKartuSiswa(data) {
+      document.getElementById("kartuIzinContainer").classList.remove("hidden");
+      document.getElementById("cardNama").innerText = `${data.nama} (${data.kelas})`;
+      document.getElementById("cardDetail").innerText = `${data.kamar} | Keluar: ${data.jamKeluar} - Kembali: ${data.estimasiKembali}`;
+      document.getElementById("cardKode").innerText = data.kodeIzin;
+      document.getElementById("cardAlasan").innerText = data.alasan;
+      
+      const badge = document.getElementById("cardStatus");
+      badge.innerText = data.status;
+      badge.className = data.status === "Disetujui" 
+        ? "px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800"
+        : "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800";
+    }
+
+    function ubahStatus(index, statusBaru) {
+      dataIzin[index].status = statusBaru;
+      simpanLocal();
+      // Perbarui juga kartu siswa jika kode izinnya sama
+      if (document.getElementById("cardKode").innerText === dataIzin[index].kodeIzin) {
+        tampilkanKartuSiswa(dataIzin[index]);
+      }
+    }
+
+    function renderTabel() {
+      const tbody = document.getElementById("tabelDaftarIzin");
+      tbody.innerHTML = "";
+
+      let menunggu = 0;
+      let keluar = 0;
+
+      dataIzin.forEach((item, idx) => {
+        if (item.status === "Menunggu") menunggu++;
+        if (item.status === "Disetujui") keluar++;
+
+        let badgeColor = "bg-amber-100 text-amber-800";
+        if (item.status === "Disetujui") badgeColor = "bg-emerald-100 text-emerald-800";
+        if (item.status === "Ditolak") badgeColor = "bg-rose-100 text-rose-800";
+        if (item.status === "Sudah Kembali") badgeColor = "bg-slate-200 text-slate-700";
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-mono font-semibold text-xs">${item.kodeIzin}</td>
+            <td class="p-3">
+              <div class="font-bold text-slate-800">${item.nama}</div>
+              <div class="text-xs text-slate-500">${item.kelas} • ${item.kamar}</div>
+            </td>
+            <td class="p-3">
+              <div class="font-medium">${item.jenisIzin}</div>
+              <div class="text-xs text-slate-500">Jam ${item.jamKeluar} s/d ${item.estimasiKembali}</div>
+              <div class="text-xs text-slate-400 italic mt-0.5">"${item.alasan}"</div>
+            </td>
+            <td class="p-3">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeColor}">${item.status}</span>
+            </td>
+            <td class="p-3 text-center space-x-1">
+              ${item.status === "Menunggu" ? `
+                <button onclick="ubahStatus(${idx}, 'Disetujui')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-xs font-semibold">Setujui</button>
+                <button onclick="ubahStatus(${idx}, 'Ditolak')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1 rounded text-xs font-semibold">Tolak</button>
+              ` : ""}
+              ${item.status === "Disetujui" ? `
+                <button onclick="ubahStatus(${idx}, 'Sudah Kembali')" class="bg-blue-900 hover:bg-blue-950 text-white px-2.5 py-1 rounded text-xs font-semibold">Konfirmasi Kembali</button>
+              ` : ""}
+              ${(item.status === "Ditolak" || item.status === "Sudah Kembali") ? `<span class="text-xs text-slate-400">Selesai</span>` : ""}
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("statTotal").innerText = dataIzin.length;
+      document.getElementById("statMenunggu").innerText = menunggu;
+      document.getElementById("statKeluar").innerText = keluar;
+    }
+
+    renderTabel();
+  </script>
+</body>
+</html>
